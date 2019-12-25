@@ -25,6 +25,8 @@ spring:
           destination: gassman-order-registration
         orderPaymentChannel:
           destination: gassman-order-payment
+        orderPaymentConfirmationChannel:
+          destination: gassman-order-payment-confirmation
 
 eureka:
   instance:

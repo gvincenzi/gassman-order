@@ -7,6 +7,9 @@ import org.gassman.order.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.StreamListener;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.support.MessageBuilder;
 
 import java.util.Optional;
 
@@ -14,6 +17,9 @@ import java.util.Optional;
 public class MQListener {
     @Autowired
     OrderRepository orderRepository;
+
+    @Autowired
+    private MessageChannel orderPaymentConfirmationChannel;
 
     @StreamListener(target = MQBinding.ORDER_PAYMENT)
     public void processUserOrder(PaymentDTO msg) {
@@ -23,6 +29,8 @@ public class MQListener {
             orderPersisted.get().setPaymentExternalReference(msg.getPaymentId());
             orderPersisted.get().setPaymentExternalDateTime(msg.getPaymentDateTime());
             orderRepository.save(orderPersisted.get());
+            Message<Order> msgToSend = MessageBuilder.withPayload(orderPersisted.get()).build();
+            orderPaymentConfirmationChannel.send(msgToSend);
         }
     }
 }
