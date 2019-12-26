@@ -6,7 +6,7 @@ spring:
     name: gassman-order-service
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
   datasource:
     url: jdbc:h2:file:./data/gassman
     driver-class-name: org.h2.Driver
@@ -15,7 +15,7 @@ spring:
     password:
 
   rabbitmq :
-    addresses: 
+    addresses: amqp://***
   cloud:
     stream:
       bindings:

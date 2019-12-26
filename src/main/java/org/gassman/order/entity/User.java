@@ -17,8 +17,10 @@ public class User {
     private String name;
     @Column
     private String surname;
-    @Column
+    @Column(nullable = false)
     private String mail;
+    @Column
+    private Integer telegramUserId;
     @Column
     private Boolean active = Boolean.TRUE;
 }

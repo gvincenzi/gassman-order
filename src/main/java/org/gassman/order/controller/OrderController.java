@@ -55,8 +55,12 @@ public class OrderController {
     @PostMapping
     public ResponseEntity<Order> postOrder(@RequestBody Order order){
         setJoinedEntities(order);
+        return createOrder(order);
+    }
+
+    private ResponseEntity<Order> createOrder(@RequestBody Order order) {
         Integer updateAvailableQuantity = order.getProduct().getAvailableQuantity() - order.getQuantity();
-        if(updateAvailableQuantity < 0) {
+        if (updateAvailableQuantity < 0) {
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Quantity reached is not available", null);
         }
 
@@ -65,6 +69,21 @@ public class OrderController {
         Order orderPersisted = orderRepository.save(order);
         sendUserOrderMessage(orderPersisted);
         return new ResponseEntity<>(orderPersisted, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/telegram")
+    public ResponseEntity<Order> postOrderByTelegram(@RequestBody Order order){
+        Optional<User> user = userRepository.findByTelegramUserId(order.getUser().getTelegramUserId());
+        Optional<Product> product = productRepository.findById(order.getProduct().getProductId());
+        if(!user.isPresent()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("User with Telegram ID %d does not exists",order.getUser().getTelegramUserId()), null);
+        }
+        if(!product.isPresent()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Product ID %d does not exists",order.getProduct().getProductId()), null);
+        }
+        user.ifPresent(order::setUser);
+        product.ifPresent(order::setProduct);
+        return createOrder(order);
     }
 
     @PutMapping("/{id}")
@@ -103,6 +122,12 @@ public class OrderController {
     private void setJoinedEntities(@RequestBody Order order) {
         Optional<User> user = userRepository.findById(order.getUser().getId());
         Optional<Product> product = productRepository.findById(order.getProduct().getProductId());
+        if(!user.isPresent()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("User ID %d does not exists",order.getUser().getId()), null);
+        }
+        if(!product.isPresent()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Product ID %d does not exists",order.getProduct().getProductId()), null);
+        }
         user.ifPresent(order::setUser);
         product.ifPresent(order::setProduct);
     }

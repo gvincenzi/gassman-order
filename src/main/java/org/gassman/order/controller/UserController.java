@@ -1,7 +1,6 @@
 package org.gassman.order.controller;
 
 import org.gassman.order.entity.User;
-import org.gassman.order.repository.OrderRepository;
 import org.gassman.order.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -74,6 +73,18 @@ public class UserController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> deleteUser(@PathVariable Long id){
         Optional<User> user = userRepository.findById(id);
+        if(user.isPresent()){
+            user.get().setActive(Boolean.FALSE);
+            userRepository.save(user.get());
+            return new ResponseEntity<>(Boolean.TRUE, HttpStatus.OK);
+        } else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("ID %d does not exists",id), null);
+        }
+    }
+
+    @DeleteMapping("/telegram/{id}")
+    public ResponseEntity<Boolean> deleteUserByTelegram(@PathVariable Integer id){
+        Optional<User> user = userRepository.findByTelegramUserId(id);
         if(user.isPresent()){
             user.get().setActive(Boolean.FALSE);
             userRepository.save(user.get());
