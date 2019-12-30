@@ -49,6 +49,9 @@ public class UserController {
         User userInDB = userRepository.findByMail(user.getMail());
         if(userInDB != null) {
             userInDB.setActive(Boolean.TRUE);
+            userInDB.setName(user.getName());
+            userInDB.setSurname(user.getSurname());
+            userInDB.setTelegramUserId(user.getTelegramUserId());
             userRepository.save(userInDB);
             sendUserRegistrationMessage(userInDB);
             return new ResponseEntity<>(userInDB, HttpStatus.CREATED);
@@ -77,6 +80,16 @@ public class UserController {
             user.get().setActive(Boolean.FALSE);
             userRepository.save(user.get());
             return new ResponseEntity<>(Boolean.TRUE, HttpStatus.OK);
+        } else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("ID %d does not exists",id), null);
+        }
+    }
+
+    @GetMapping("/telegram/{id}")
+    public ResponseEntity<User> findUserByTelegram(@PathVariable Integer id){
+        Optional<User> user = userRepository.findByTelegramUserIdAndActiveTrue(id);
+        if(user.isPresent()){
+            return new ResponseEntity<>(user.get(), HttpStatus.OK);
         } else {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("ID %d does not exists",id), null);
         }

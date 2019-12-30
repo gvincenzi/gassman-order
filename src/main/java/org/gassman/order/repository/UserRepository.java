@@ -10,4 +10,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findByActiveTrue();
     User findByMail(String mail);
     Optional<User> findByTelegramUserId(Integer telegramUserId);
+    Optional<User> findByTelegramUserIdAndActiveTrue(Integer id);
 }
