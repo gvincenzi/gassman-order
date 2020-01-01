@@ -13,6 +13,7 @@
     <version>1.0.0-SNAPSHOT</version>
     <name>gassman-order</name>
     <description>GasSMan - Order Management Microservice</description>
+    <packaging>jar</packaging>
 
     <properties>
         <java.version>1.8</java.version>
