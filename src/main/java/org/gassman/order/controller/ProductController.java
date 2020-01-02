@@ -2,7 +2,6 @@ package org.gassman.order.controller;
 
 import org.gassman.order.entity.Order;
 import org.gassman.order.entity.Product;
-import org.gassman.order.entity.User;
 import org.gassman.order.repository.OrderRepository;
 import org.gassman.order.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,6 +71,8 @@ public class ProductController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> deleteProduct(@PathVariable Long id){
         if(productRepository.existsById(id)){
+            List<Order> orders = orderRepository.findByProduct(productRepository.getOne(id));
+            orderRepository.deleteAll(orders);
             productRepository.deleteById(id);
             return new ResponseEntity<>(Boolean.TRUE, HttpStatus.OK);
         } else {
