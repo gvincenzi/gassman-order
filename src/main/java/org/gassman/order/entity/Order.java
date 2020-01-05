@@ -19,6 +19,10 @@ public class Order {
     @Column(nullable = false)
     private Boolean paid = Boolean.FALSE;
     @Column
+    private Boolean paymentReminder = Boolean.FALSE;
+    @Column
+    private Boolean deliveryReminder = Boolean.FALSE;
+    @Column
     private String paymentExternalReference;
     @Column
     private LocalDateTime paymentExternalDateTime;

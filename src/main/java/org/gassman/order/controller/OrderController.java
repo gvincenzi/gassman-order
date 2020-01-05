@@ -130,6 +130,9 @@ public class OrderController {
         }
         user.ifPresent(order::setUser);
         product.ifPresent(order::setProduct);
+
+        order.setDeliveryReminder(order.getDeliveryReminder() == null ? Boolean.FALSE : order.getDeliveryReminder());
+        order.setPaymentReminder(order.getPaymentReminder() == null ? Boolean.FALSE : order.getPaymentReminder());
     }
 
     private void sendUserOrderMessage(@RequestBody Order order) {

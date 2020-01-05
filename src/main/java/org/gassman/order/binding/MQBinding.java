@@ -10,6 +10,8 @@ public interface MQBinding {
     String USER_ORDER = "userOrderChannel";
     String ORDER_PAYMENT = "orderPaymentChannel";
     String ORDER_PAYMENT_CONFIRMATION = "orderPaymentConfirmationChannel";
+    String ORDER_NON_PAID_REMINDER = "orderNonPaidReminderChannel";
+    String ORDER_PRODUCT_DELIVERY_REMINDER = "orderProductDeliveryReminderChannel";
 
     @Output(USER_REGISTRATION)
     MessageChannel userRegistrationChannel();
@@ -22,4 +24,10 @@ public interface MQBinding {
 
     @Output(ORDER_PAYMENT_CONFIRMATION)
     MessageChannel userOrderPaymentConfirmationChannel();
+
+    @Output(ORDER_NON_PAID_REMINDER)
+    MessageChannel orderNonPaidReminderChannel();
+
+    @Output(ORDER_PRODUCT_DELIVERY_REMINDER)
+    MessageChannel orderProductDeliveryReminderChannel();
 }

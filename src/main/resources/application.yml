@@ -27,6 +27,15 @@ spring:
           destination: gassman-order-payment
         orderPaymentConfirmationChannel:
           destination: gassman-order-payment-confirmation
+        orderNonPaidReminderChannel:
+          destination: gassman-order-non-paid-reminder
+        orderProductDeliveryReminderChannel:
+          destination: gassman-order-product-delivery-reminder
+
+job:
+  orderNonPaidReminderTimeout: 2880
+  orderProductDeliveryReminderTimeout: 1440
+  delay: 60000
 
 eureka:
   instance:
