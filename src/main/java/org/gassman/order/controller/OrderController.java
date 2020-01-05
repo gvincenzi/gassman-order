@@ -28,7 +28,6 @@ public class OrderController {
     private UserRepository userRepository;
     @Autowired
     private ProductRepository productRepository;
-
     @Autowired
     private MessageChannel userOrderChannel;
 
@@ -135,7 +134,7 @@ public class OrderController {
         order.setPaymentReminder(order.getPaymentReminder() == null ? Boolean.FALSE : order.getPaymentReminder());
     }
 
-    private void sendUserOrderMessage(@RequestBody Order order) {
+    private void sendUserOrderMessage(Order order) {
         Message<Order> msg = MessageBuilder.withPayload(order).build();
         userOrderChannel.send(msg);
     }

@@ -31,6 +31,8 @@ spring:
           destination: gassman-order-non-paid-reminder
         orderProductDeliveryReminderChannel:
           destination: gassman-order-product-delivery-reminder
+        productUpdateChannel:
+          destination: gassman-product-update
 
 job:
   orderNonPaidReminderTimeout: 2880

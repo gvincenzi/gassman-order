@@ -7,6 +7,9 @@ import org.gassman.order.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -19,9 +22,10 @@ import java.util.Optional;
 public class ProductController {
     @Autowired
     private ProductRepository productRepository;
-
     @Autowired
     private OrderRepository orderRepository;
+    @Autowired
+    private MessageChannel productUpdateChannel;
 
     @GetMapping
     public ResponseEntity<List<Product>> getProducts(){
@@ -59,10 +63,15 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Product> putProduct(@PathVariable Long id, @RequestBody Product product){
-        if(productRepository.existsById(id)){
-            product.setProductId(id);
-            return new ResponseEntity<>(productRepository.save(product), HttpStatus.ACCEPTED);
+    public ResponseEntity<Product> putProduct(@PathVariable Long id, @RequestBody Product productToUpdate){
+        Optional<Product> product = productRepository.findById(id);
+        if(product.isPresent()){
+            productToUpdate.setProductId(id);
+            if(!product.get().equals(productToUpdate)){
+                productToUpdate = productRepository.save(productToUpdate);
+                sendUserOrdersMessage(orderRepository.findByProduct(productToUpdate));
+            }
+            return new ResponseEntity<>(productToUpdate, HttpStatus.ACCEPTED);
         } else {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("ID %d does not exists",id), null);
         }
@@ -77,6 +86,13 @@ public class ProductController {
             return new ResponseEntity<>(Boolean.TRUE, HttpStatus.OK);
         } else {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("ID %d does not exists",id), null);
+        }
+    }
+
+    private void sendUserOrdersMessage(List<Order> orders) {
+        for(Order order : orders) {
+            Message<Order> msg = MessageBuilder.withPayload(order).build();
+            productUpdateChannel.send(msg);
         }
     }
 }
