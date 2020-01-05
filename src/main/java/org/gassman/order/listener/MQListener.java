@@ -25,7 +25,7 @@ public class MQListener {
     public void processUserOrder(PaymentDTO msg) {
         Optional<Order> orderPersisted = orderRepository.findById(msg.getOrderId());
         if(orderPersisted.isPresent()){
-            orderPersisted.get().setPayed(Boolean.TRUE);
+            orderPersisted.get().setPaid(Boolean.TRUE);
             orderPersisted.get().setPaymentExternalReference(msg.getPaymentId());
             orderPersisted.get().setPaymentExternalDateTime(msg.getPaymentDateTime());
             orderRepository.save(orderPersisted.get());

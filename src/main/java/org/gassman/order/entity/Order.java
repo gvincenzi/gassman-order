@@ -17,7 +17,7 @@ public class Order {
     @Column
     private Integer quantity;
     @Column(nullable = false)
-    private Boolean payed = Boolean.FALSE;
+    private Boolean paid = Boolean.FALSE;
     @Column
     private String paymentExternalReference;
     @Column
