@@ -23,6 +23,9 @@ public class UserController {
     @Autowired
     private MessageChannel userRegistrationChannel;
 
+    @Autowired
+    private MessageChannel userCancellationChannel;
+
     @GetMapping
     public ResponseEntity<List<User>> getUsers(){
         return new ResponseEntity<>(userRepository.findByActiveTrue(), HttpStatus.OK);
@@ -77,9 +80,7 @@ public class UserController {
     public ResponseEntity<Boolean> deleteUser(@PathVariable Long id){
         Optional<User> user = userRepository.findById(id);
         if(user.isPresent()){
-            user.get().setActive(Boolean.FALSE);
-            userRepository.save(user.get());
-            return new ResponseEntity<>(Boolean.TRUE, HttpStatus.OK);
+            return deleteUser(user);
         } else {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("ID %d does not exists",id), null);
         }
@@ -99,9 +100,7 @@ public class UserController {
     public ResponseEntity<Boolean> deleteUserByTelegram(@PathVariable Integer id){
         Optional<User> user = userRepository.findByTelegramUserId(id);
         if(user.isPresent()){
-            user.get().setActive(Boolean.FALSE);
-            userRepository.save(user.get());
-            return new ResponseEntity<>(Boolean.TRUE, HttpStatus.OK);
+            return deleteUser(user);
         } else {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("ID %d does not exists",id), null);
         }
@@ -110,5 +109,13 @@ public class UserController {
     private void sendUserRegistrationMessage(@RequestBody User user) {
         Message<User> msg = MessageBuilder.withPayload(user).build();
         userRegistrationChannel.send(msg);
+    }
+
+    private ResponseEntity<Boolean> deleteUser(Optional<User> user) {
+        user.get().setActive(Boolean.FALSE);
+        userRepository.save(user.get());
+        Message<User> msg = MessageBuilder.withPayload(user.get()).build();
+        userCancellationChannel.send(msg);
+        return new ResponseEntity<>(Boolean.TRUE, HttpStatus.OK);
     }
 }

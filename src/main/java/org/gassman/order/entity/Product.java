@@ -42,11 +42,12 @@ public class Product {
                 unitOfMeasure.equals(product.unitOfMeasure) &&
                 pricePerUnit.compareTo(product.pricePerUnit) == 0 &&
                 availableQuantity.equals(product.availableQuantity) &&
-                deliveryDateTime.equals(product.deliveryDateTime);
+                deliveryDateTime.equals(product.deliveryDateTime) &&
+                active.equals(product.active);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(productId, name, description, unitOfMeasure, pricePerUnit, availableQuantity, deliveryDateTime);
+        return Objects.hash(productId, name, description, unitOfMeasure, pricePerUnit, availableQuantity, deliveryDateTime, active);
     }
 }

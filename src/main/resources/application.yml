@@ -33,6 +33,12 @@ spring:
           destination: gassman-order-product-delivery-reminder
         productUpdateChannel:
           destination: gassman-product-update
+        userCancellationChannel:
+          destination: gassman-user-cancellation
+        orderCancellationChannel:
+          destination: gassman-order-cancellation
+        productCancellationChannel:
+          destination: gassman-product-cancellation
 
 job:
   orderNonPaidReminderTimeout: 2880

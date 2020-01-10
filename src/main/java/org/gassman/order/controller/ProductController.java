@@ -26,6 +26,10 @@ public class ProductController {
     private OrderRepository orderRepository;
     @Autowired
     private MessageChannel productUpdateChannel;
+    @Autowired
+    private MessageChannel productCancellationChannel;
+    @Autowired
+    private MessageChannel orderCancellationChannel;
 
     @GetMapping
     public ResponseEntity<List<Product>> getProducts(){
@@ -80,9 +84,16 @@ public class ProductController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> deleteProduct(@PathVariable Long id){
         if(productRepository.existsById(id)){
-            List<Order> orders = orderRepository.findByProduct(productRepository.getOne(id));
+            Product productToDelete = productRepository.getOne(id);
+            List<Order> orders = orderRepository.findByProduct(productToDelete);
             orderRepository.deleteAll(orders);
+            sendUserOrdersCancellationMessage(orders);
+
             productRepository.deleteById(id);
+
+            Message<Product> msg = MessageBuilder.withPayload(productToDelete).build();
+            productCancellationChannel.send(msg);
+
             return new ResponseEntity<>(Boolean.TRUE, HttpStatus.OK);
         } else {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("ID %d does not exists",id), null);
@@ -93,6 +104,13 @@ public class ProductController {
         for(Order order : orders) {
             Message<Order> msg = MessageBuilder.withPayload(order).build();
             productUpdateChannel.send(msg);
+        }
+    }
+
+    private void sendUserOrdersCancellationMessage(List<Order> orders) {
+        for(Order order : orders) {
+            Message<Order> msg = MessageBuilder.withPayload(order).build();
+            orderCancellationChannel.send(msg);
         }
     }
 }
