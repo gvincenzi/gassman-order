@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.support.MessageBuilder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -81,17 +82,18 @@ public class ProductController {
         }
     }
 
+    @Transactional
     @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> deleteProduct(@PathVariable Long id){
         if(productRepository.existsById(id)){
-            Product productToDelete = productRepository.getOne(id);
-            List<Order> orders = orderRepository.findByProduct(productToDelete);
+            Optional<Product> productToDelete = productRepository.findById(id);
+            List<Order> orders = orderRepository.findByProduct(productToDelete.get());
             orderRepository.deleteAll(orders);
             sendUserOrdersCancellationMessage(orders);
 
             productRepository.deleteById(id);
 
-            Message<Product> msg = MessageBuilder.withPayload(productToDelete).build();
+            Message<Product> msg = MessageBuilder.withPayload(productToDelete.get()).build();
             productCancellationChannel.send(msg);
 
             return new ResponseEntity<>(Boolean.TRUE, HttpStatus.OK);
