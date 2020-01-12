@@ -9,5 +9,7 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findByDeliveryDateTimeAfter(LocalDateTime dateTime);
 
+    List<Product> findByDeliveryDateTimeBeforeOrderByDeliveryDateTimeDesc(LocalDateTime dateTime);
+
     List<Product> findByActiveTrueAndDeliveryDateTimeAfter(LocalDateTime now);
 }

@@ -42,6 +42,11 @@ public class ProductController {
         return new ResponseEntity<>(productRepository.findByDeliveryDateTimeAfter(LocalDateTime.now()), HttpStatus.OK);
     }
 
+    @GetMapping("/history")
+    public ResponseEntity<List<Product>> getAllPastProducts(){
+        return new ResponseEntity<>(productRepository.findByDeliveryDateTimeBeforeOrderByDeliveryDateTimeDesc(LocalDateTime.now()), HttpStatus.OK);
+    }
+
     @GetMapping("/{id}/orders")
     public ResponseEntity<List<Order>> findProductOrders(@PathVariable Long id){
         Optional<Product> product = productRepository.findById(id);
