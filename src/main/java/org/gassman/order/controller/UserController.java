@@ -31,6 +31,11 @@ public class UserController {
         return new ResponseEntity<>(userRepository.findByActiveTrue(), HttpStatus.OK);
     }
 
+    @GetMapping("/administrator")
+    public ResponseEntity<List<User>> getAdministrators(){
+        return new ResponseEntity<>(userRepository.findByAdministratorTrue(), HttpStatus.OK);
+    }
+
     @GetMapping("/all")
     public ResponseEntity<List<User>> getAllUsers(){
         return new ResponseEntity<>(userRepository.findAll(), HttpStatus.OK);

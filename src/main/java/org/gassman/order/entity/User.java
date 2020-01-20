@@ -23,4 +23,6 @@ public class User {
     private Integer telegramUserId;
     @Column
     private Boolean active = Boolean.TRUE;
+    @Column
+    private Boolean administrator = Boolean.FALSE;
 }
