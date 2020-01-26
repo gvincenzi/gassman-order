@@ -1,5 +1,6 @@
 package org.gassman.order.controller.publicapi;
 
+import org.gassman.order.entity.Order;
 import org.gassman.order.entity.Product;
 import org.gassman.order.repository.OrderRepository;
 import org.gassman.order.repository.ProductRepository;
@@ -34,6 +35,21 @@ public class PublicProductController {
         Optional<Product> product = productRepository.findById(id);
         if(product.isPresent()){
             return new ResponseEntity<>(product, HttpStatus.OK);
+        } else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("ID %d does not exists",id), null);
+        }
+    }
+
+    @GetMapping("/{id}/orderQuantity")
+    public ResponseEntity<Integer> findProductOrderQuantityById(@PathVariable Long id){
+        Optional<Product> product = productRepository.findById(id);
+        if(product.isPresent()){
+            List<Order> orders = orderRepository.findByProduct(product.get());
+            Integer quantity = 0;
+            for (Order order : orders){
+                quantity+=order.getQuantity();
+            }
+            return new ResponseEntity<>(quantity, HttpStatus.OK);
         } else {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("ID %d does not exists",id), null);
         }
