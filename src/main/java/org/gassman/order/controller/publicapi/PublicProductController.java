@@ -1,5 +1,6 @@
 package org.gassman.order.controller.publicapi;
 
+import org.gassman.order.dto.PublicProductDTO;
 import org.gassman.order.entity.Order;
 import org.gassman.order.entity.Product;
 import org.gassman.order.repository.OrderRepository;
@@ -31,25 +32,27 @@ public class PublicProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<Product>> findProductById(@PathVariable Long id){
+    public ResponseEntity<PublicProductDTO> findProductById(@PathVariable Long id){
         Optional<Product> product = productRepository.findById(id);
         if(product.isPresent()){
-            return new ResponseEntity<>(product, HttpStatus.OK);
-        } else {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("ID %d does not exists",id), null);
-        }
-    }
-
-    @GetMapping("/{id}/orderQuantity")
-    public ResponseEntity<Integer> findProductOrderQuantityById(@PathVariable Long id){
-        Optional<Product> product = productRepository.findById(id);
-        if(product.isPresent()){
+            PublicProductDTO publicProductDTO = new PublicProductDTO();
             List<Order> orders = orderRepository.findByProduct(product.get());
             Integer quantity = 0;
             for (Order order : orders){
                 quantity+=order.getQuantity();
             }
-            return new ResponseEntity<>(quantity, HttpStatus.OK);
+
+            publicProductDTO.setAvailableQuantity(product.get().getAvailableQuantity());
+            publicProductDTO.setBookedQuantity(quantity);
+            publicProductDTO.setDeliveryDateTime(product.get().getDeliveryDateTime());
+            publicProductDTO.setDescription(product.get().getDescription());
+            publicProductDTO.setName(product.get().getName());
+            publicProductDTO.setPricePerUnit(product.get().getPricePerUnit());
+            publicProductDTO.setProductId(product.get().getProductId());
+            publicProductDTO.setUnitOfMeasure(product.get().getUnitOfMeasure());
+            publicProductDTO.setActive(product.get().getActive());
+
+            return new ResponseEntity<>(publicProductDTO, HttpStatus.OK);
         } else {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("ID %d does not exists",id), null);
         }
