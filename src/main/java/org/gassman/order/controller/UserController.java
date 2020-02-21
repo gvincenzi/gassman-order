@@ -54,6 +54,19 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<User> postUser(@RequestBody User user){
+        if(user.getTelegramUserId() != null){
+            Optional<User> userOptional = userRepository.findByTelegramUserId(user.getTelegramUserId());
+            if(userOptional.isPresent()){
+                userOptional.get().setActive(Boolean.TRUE);
+                userOptional.get().setName(user.getName());
+                userOptional.get().setSurname(user.getSurname());
+                userOptional.get().setMail(user.getMail());
+                userRepository.save(userOptional.get());
+                sendUserRegistrationMessage(userOptional.get());
+                return new ResponseEntity<>(userOptional.get(), HttpStatus.CREATED);
+            }
+        }
+
         User userInDB = userRepository.findByMail(user.getMail());
         if(userInDB != null) {
             userInDB.setActive(Boolean.TRUE);
