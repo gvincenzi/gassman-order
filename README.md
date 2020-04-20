@@ -44,7 +44,7 @@ api:
 ### Spring Profile
 Il modulo va lanciato specificando uno spring active profile "gassman-[NOME_DEL_PROFILO]": il nome sarà quello che avrete scelto come suffisso del vostro file di properties.
 
-### Start GasSMan - Gateway
+### Start GasSMan - Order
 Per lanciare il modulo e il server Eureka, basterà lanciare un comando install in MAVEN e, dopo aver posizionato il jar dove più conviene nel vostro file system, potrete lanciare il comando :
 
 ```
