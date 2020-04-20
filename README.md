@@ -15,6 +15,7 @@ Technologies used in this module of the project:
 - Spring Security
 - RabbitMQ
 - H2 database
+- Lombok
 - Maven
 
 ## Installation
