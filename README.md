@@ -4,7 +4,7 @@ GAS (Gruppo di Acquisto Solidale) Sales Management è un sistema Java basato su 
 GasSMan ha come scopo quello di fornire ad un amminstratore di un GAS un'interfaccia per configurare la lista dei prodotti in distribuzione, e un bot grazie al quale gli inscritti possono consultare l'elenco dei prodotti disponibili ed effettuare gli ordini.
 
 ## Didactical Scope
-Questo repository è un modulo di un progetto Java di esempio descritto nel libro (scritto in lingua italiana) **"Anche i microservizi nel loro piccolo s'incazzano- Guida alla comprensione dei principi di un'architettura in microservizi"** di [Giuseppe Vincenzi](https://gvincenzi.tumblr.com/).
+Questo repository è un modulo di un progetto Java di esempio descritto nel libro (scritto in lingua italiana) **"Anche i microservizi nel loro piccolo s'incazzano - Guida alla comprensione dei principi di un'architettura in microservizi"** di [Giuseppe Vincenzi](https://gvincenzi.tumblr.com/).
 
 ## Technologies
 Technologies used in this module of the project:
@@ -48,7 +48,7 @@ Il modulo va lanciato specificando uno spring active profile "gassman-[NOME_DEL_
 Per lanciare il modulo e il server Eureka, basterà lanciare un comando install in MAVEN e, dopo aver posizionato il jar dove più conviene nel vostro file system, potrete lanciare il comando :
 
 ```
-java -Dspring.profiles.active=gassman-[NOME_DEL_PROFILO] -jar gassman-gateway-1.0.0.jar
+java -Dspring.profiles.active=gassman-[NOME_DEL_PROFILO] -jar gassman-order-1.1.0.jar
 ```
 
 Questo servizio deve essere lanciato con un Eureka Server già attivo e in ascolto, secondo quanto configurato nel file di properties (application.yml), sulla porta 8880.
